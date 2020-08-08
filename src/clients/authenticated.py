@@ -2,6 +2,9 @@ import asyncio
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
 
+from src.decorators import require_api_secret, require_wallet_signature
+
+# TODO Can probably just require api_secret on init instead and forego all the decorator checks :-)
 
 class AuthenticatedClient():
     def __init__(self, config: APIConfig):
@@ -12,6 +15,7 @@ class AuthenticatedClient():
         self.request = IDEXAsyncRequest()
         await self.request.create()
 
+    @require_api_secret
     async def get_user(self, nonce):
         """
           https://docs.idex.io/#get-user-account
@@ -36,7 +40,9 @@ class AuthenticatedClient():
             }
         )
         return result
-
+      
+    @require_api_secret
+    @require_wallet_signature
     async def associate_wallet(self, nonce, wallet):
         """
           https://docs.idex.io/#associate-wallet
@@ -47,7 +53,8 @@ class AuthenticatedClient():
           }
         """
         pass
-
+      
+    @require_api_secret
     async def get_wallets(self, nonce):
         """
           https://docs.idex.io/#get-wallets
@@ -69,6 +76,7 @@ class AuthenticatedClient():
         )
         return result
 
+    @require_api_secret
     async def get_balances(self, wallet, asset=None):
         """
           https://docs.idex.io/#get-balances
@@ -88,6 +96,7 @@ class AuthenticatedClient():
           'nonce': self.config.get_nonce(),
           'wallet': wallet
         }
+        
         if asset != None:
           params['asset'] = asset
           
@@ -99,6 +108,8 @@ class AuthenticatedClient():
         
         return result
 
+    @require_api_secret
+    @require_wallet_signature
     async def create_order(self):
         """
           https://docs.idex.io/#create-order
@@ -181,13 +192,17 @@ class AuthenticatedClient():
             }
         """
         pass
-
+      
+    @require_api_secret
+    @require_wallet_signature
     async def create_test_order(self):
         """
           https://docs.idex.io/#test-create-order
         """
         pass
 
+    @require_api_secret
+    @require_wallet_signature
     async def cancel_order(self):
         """
           https://docs.idex.io/#cancel-order
@@ -210,30 +225,36 @@ class AuthenticatedClient():
         """
         pass
 
+    @require_api_secret
+    @require_wallet_signature
     async def cancel_orders(self):
         """
           https://docs.idex.io/#cancel-order
         """
         pass
 
+    @require_api_secret
     async def get_order(self):
         """
           https://docs.idex.io/#get-orders
         """
         pass
 
+    @require_api_secret
     async def get_orders(self):
         """
           https://docs.idex.io/#get-orders
         """
         pass
 
+    @require_api_secret
     async def get_fill(self):
         """
           https://docs.idex.io/#get-fills
         """
         pass
 
+    @require_api_secret
     async def get_fills(self):
         """
           https://docs.idex.io/#get-fills
@@ -261,6 +282,7 @@ class AuthenticatedClient():
         """
         pass
 
+    @require_api_secret
     async def get_deposit(self):
         """
           https://docs.idex.io/#get-deposits
@@ -279,12 +301,15 @@ class AuthenticatedClient():
         """
         pass
 
+    @require_api_secret
     async def get_deposits(self):
         """
           https://docs.idex.io/#get-deposits
         """
         pass
 
+    @require_api_secret
+    @require_wallet_signature
     async def withdraw(self):
         """
           https://docs.idex.io/#withdraw-funds
@@ -315,18 +340,21 @@ class AuthenticatedClient():
         """
         pass
 
+    @require_api_secret
     async def get_withdrawal(self):
         """
           https://docs.idex.io/#get-withdrawals
         """
         pass
-
+      
+    @require_api_secret
     async def get_withdrawals(self):
         """
           https://docs.idex.io/#get-withdrawals
         """
         pass
 
+    @require_api_secret
     async def get_ws_token(self):
         """
           https://docs.idex.io/#get-authentication-token

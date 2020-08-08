@@ -3,7 +3,7 @@ import asyncio
 
 import urllib
 
-from src.config import APIConfig
+from .config import APIConfig
 
 class IDEXAsyncRequest():
     
