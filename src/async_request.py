@@ -12,7 +12,7 @@ class IDEXAsyncRequest():
         async with aiohttp.ClientSession() as session:
             self._session = session
 
-    def _prepare_request(config: APIConfig, params=None):
+    def _prepare_request(self, *, config: APIConfig, params=None):
         options = {
             'base_url': config.get_rest_url(),
             'headers': config.get_headers()
