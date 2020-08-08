@@ -1,6 +1,3 @@
-import aiohttp
-import asyncio
-
 from typing import Optional, Literal
 
 from src.config import APIConfig
