@@ -6,17 +6,18 @@ from src.decorators import require_api_secret, require_wallet_signature
 
 # TODO Can probably just require api_secret on init instead and forego all the decorator checks :-)
 
+
 class AuthenticatedClient():
-    def __init__(self, config: APIConfig):
+    def __init__(self, *, config: APIConfig):
         print('config', config)
         self.config = config
 
-    async def create(self, is_sandbox: bool):
+    async def create(self):
         self.request = IDEXAsyncRequest()
         await self.request.create()
 
     @require_api_secret
-    async def get_user(self, nonce):
+    async def get_user(self, *, nonce, config=None):
         """
           https://docs.idex.io/#get-user-account
           {
@@ -32,18 +33,23 @@ class AuthenticatedClient():
               "takerFeeRate": "0.002"
           }
         """
+        # Allow for config override
+        _config = config
+        if _config == None:
+            _config = self.config
+
         result = await self.request.get(
             endpoint='user',
-            config=self.config,
+            config=_config,
             params={
                 'nonce': self.config.get_nonce()
             }
         )
         return result
-      
+
     @require_api_secret
     @require_wallet_signature
-    async def associate_wallet(self, nonce, wallet):
+    async def associate_wallet(self, *, nonce, wallet):
         """
           https://docs.idex.io/#associate-wallet
           {
@@ -53,9 +59,9 @@ class AuthenticatedClient():
           }
         """
         pass
-      
+
     @require_api_secret
-    async def get_wallets(self, nonce):
+    async def get_wallets(self, *, nonce):
         """
           https://docs.idex.io/#get-wallets
           [
@@ -77,7 +83,7 @@ class AuthenticatedClient():
         return result
 
     @require_api_secret
-    async def get_balances(self, wallet, asset=None):
+    async def get_balances(self, *, wallet, asset=None):
         """
           https://docs.idex.io/#get-balances
           [
@@ -91,21 +97,21 @@ class AuthenticatedClient():
               ...
           ]
         """
-        
+
         params = {
-          'nonce': self.config.get_nonce(),
-          'wallet': wallet
+            'nonce': self.config.get_nonce(),
+            'wallet': wallet
         }
-        
+
         if asset != None:
-          params['asset'] = asset
-          
+            params['asset'] = asset
+
         result = await self.request.get(
             endpoint='user',
             config=self.config,
             params=params
         )
-        
+
         return result
 
     @require_api_secret
@@ -192,7 +198,7 @@ class AuthenticatedClient():
             }
         """
         pass
-      
+
     @require_api_secret
     @require_wallet_signature
     async def create_test_order(self):
@@ -346,7 +352,7 @@ class AuthenticatedClient():
           https://docs.idex.io/#get-withdrawals
         """
         pass
-      
+
     @require_api_secret
     async def get_withdrawals(self):
         """

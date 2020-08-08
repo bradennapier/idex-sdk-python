@@ -4,6 +4,7 @@ import asyncio
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
 
+
 class PublicClient():
     def __init__(self, config: APIConfig):
         print('config', config)
@@ -152,9 +153,9 @@ class PublicClient():
     async def get_order_book_l1(self):
         """
           https://docs.idex.io/#get-order-books
-          
+
           [ price, quantity available, number of orders at price level ]
-          
+
           {
               "sequence": 71228121,
               "bids": [
@@ -170,9 +171,9 @@ class PublicClient():
     async def get_order_book_l2(self):
         """
           https://docs.idex.io/#get-order-books
-          
+
           [ price, quantity available, number of orders at price level ]
-          
+
           {
               "sequence": 71228121,
               "bids": [

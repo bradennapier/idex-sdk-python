@@ -15,7 +15,7 @@ class APIConfig():
     has_private_key = False
     has_api_key = False
     has_api_secret = False
-    
+
     def __init__(self, *,
                  api_key: Optional[str] = None,
                  api_secret: Optional[str] = None,
@@ -39,6 +39,7 @@ class APIConfig():
 
         if api_secret != None:
             self.has_api_secret = True
+
             def get_hmac_signature(self, querystring):
                 return hmac.new(secret,
                                 querystring,
@@ -48,6 +49,7 @@ class APIConfig():
 
         if wallet_private_key != None:
             self.has_private_key = True
+
             def sign_message(self, message):
                 return ethSignMessage(
                     message,
