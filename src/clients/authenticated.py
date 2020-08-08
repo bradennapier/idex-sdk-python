@@ -10,7 +10,7 @@ from src.decorators import require_api_secret, require_wallet_signature
 
 
 class AuthenticatedClient():
-    def __init__(self, *, 
+    def __init__(self, *,
                  config: Optional[APIConfig]) -> None:
         print('config', config)
         self.config = config
@@ -20,24 +20,24 @@ class AuthenticatedClient():
         await self.request.create()
 
     def _get_config(self, config: Optional[APIConfig] = None):
-      _config = config
-      
-      if not _config:
-          _config = self.config
-          
-      # Throw Exception if still no config?
-      
-      return _config
-    
+        _config = config
+
+        if not _config:
+            _config = self.config
+
+        # Throw Exception if still no config?
+
+        return _config
+
     @require_api_secret
-    async def get_user(self, *, 
+    async def get_user(self, *,
                        config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-user-account
-          
+
           May either pass a config explicitly or it will use the config 
           provided when constructed.
-          
+
           {
               "depositEnabled": true,
               "orderEnabled": true,
@@ -52,7 +52,6 @@ class AuthenticatedClient():
           }
         """
         # Allow for config override
-        
 
         result = await self.request.get(
             endpoint='user',
@@ -70,7 +69,7 @@ class AuthenticatedClient():
         """
           Associate the wallet handled by the config.  May either pass a config
           explicitly or it will use the config provided when constructed.
-          
+
           https://docs.idex.io/#associate-wallet
           {
               "address": "0xA71C4aeeAabBBB8D2910F41C2ca3964b81F7310d",
@@ -81,7 +80,7 @@ class AuthenticatedClient():
         pass
 
     @require_api_secret
-    async def get_wallets(self, *, 
+    async def get_wallets(self, *,
                           config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-wallets
@@ -104,15 +103,15 @@ class AuthenticatedClient():
         return result
 
     @require_api_secret
-    async def get_balances(self, *, 
+    async def get_balances(self, *,
                            asset=None,
                            config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-balances
-          
+
           May either pass a config explicitly or it will use the config 
           provided when constructed.
-          
+
           [
               {
                   "asset": "USDC",
@@ -125,7 +124,7 @@ class AuthenticatedClient():
           ]
         """
         _config = self._get_config(config)
-        
+
         params = {
             'nonce': _config.get_nonce(),
             'wallet': wallet
@@ -144,7 +143,8 @@ class AuthenticatedClient():
 
     @require_api_secret
     @require_wallet_signature
-    async def create_order(self):
+    async def create_order(self, *,
+                           config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#create-order
 
@@ -229,7 +229,8 @@ class AuthenticatedClient():
 
     @require_api_secret
     @require_wallet_signature
-    async def create_test_order(self):
+    async def create_test_order(self, *,
+                                config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#test-create-order
         """
@@ -237,7 +238,8 @@ class AuthenticatedClient():
 
     @require_api_secret
     @require_wallet_signature
-    async def cancel_order(self):
+    async def cancel_order(self, *,
+                           config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#cancel-order
 
@@ -261,35 +263,40 @@ class AuthenticatedClient():
 
     @require_api_secret
     @require_wallet_signature
-    async def cancel_orders(self):
+    async def cancel_orders(self, *,
+                            config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#cancel-order
         """
         pass
 
     @require_api_secret
-    async def get_order(self):
+    async def get_order(self, *,
+                        config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-orders
         """
         pass
 
     @require_api_secret
-    async def get_orders(self):
+    async def get_orders(self, *,
+                         config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-orders
         """
         pass
 
     @require_api_secret
-    async def get_fill(self):
+    async def get_fill(self, *,
+                       config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-fills
         """
         pass
 
     @require_api_secret
-    async def get_fills(self):
+    async def get_fills(self, *,
+                        config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-fills
 
@@ -317,7 +324,8 @@ class AuthenticatedClient():
         pass
 
     @require_api_secret
-    async def get_deposit(self):
+    async def get_deposit(self, *,
+                          config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-deposits
 
@@ -336,7 +344,8 @@ class AuthenticatedClient():
         pass
 
     @require_api_secret
-    async def get_deposits(self):
+    async def get_deposits(self, *,
+                           config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-deposits
         """
@@ -344,7 +353,8 @@ class AuthenticatedClient():
 
     @require_api_secret
     @require_wallet_signature
-    async def withdraw(self):
+    async def withdraw(self, *,
+                       config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#withdraw-funds
 
@@ -375,21 +385,24 @@ class AuthenticatedClient():
         pass
 
     @require_api_secret
-    async def get_withdrawal(self):
+    async def get_withdrawal(self, *,
+                             config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-withdrawals
         """
         pass
 
     @require_api_secret
-    async def get_withdrawals(self):
+    async def get_withdrawals(self, *,
+                              config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-withdrawals
         """
         pass
 
     @require_api_secret
-    async def get_ws_token(self):
+    async def get_ws_token(self, *,
+                           config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-authentication-token
 
