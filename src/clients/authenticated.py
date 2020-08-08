@@ -28,7 +28,14 @@ class AuthenticatedClient():
               "takerFeeRate": "0.002"
           }
         """
-        pass
+        result = await self.request.get(
+            endpoint='user',
+            config=self.config,
+            params={
+                'nonce': self.config.get_nonce()
+            }
+        )
+        return result
 
     async def associate_wallet(self, nonce, wallet):
         """
@@ -53,9 +60,16 @@ class AuthenticatedClient():
               ...
           ]
         """
-        pass
+        result = await self.request.get(
+            endpoint='wallets',
+            config=self.config,
+            params={
+                'nonce': self.config.get_nonce()
+            }
+        )
+        return result
 
-    async def get_balances(self):
+    async def get_balances(self, wallet, asset=None):
         """
           https://docs.idex.io/#get-balances
           [
@@ -69,14 +83,28 @@ class AuthenticatedClient():
               ...
           ]
         """
-        pass
+        
+        params = {
+          'nonce': self.config.get_nonce(),
+          'wallet': wallet
+        }
+        if asset != None:
+          params['asset'] = asset
+          
+        result = await self.request.get(
+            endpoint='user',
+            config=self.config,
+            params=params
+        )
+        
+        return result
 
     async def create_order(self):
         """
           https://docs.idex.io/#create-order
-          
+
           # Example Market Order Request
-          
+
           {
               "parameters": {
                   "nonce": "8fa5dce0-9ee6-11ea-9fa0-bf38ac8631c1",
@@ -119,7 +147,7 @@ class AuthenticatedClient():
                     ...
                 ]
             }
-            
+
             # Example Stop Loss Limit Request 
             {
                 "parameters": {
@@ -135,7 +163,7 @@ class AuthenticatedClient():
                   },
                 "signature": "<Ethereum wallet signature>"
             }
-            
+
             {
                 "market": "ETH-USDC",
                 "orderId": "3a9ef9c0-a779-11ea-907d-23e999279287",
@@ -163,7 +191,7 @@ class AuthenticatedClient():
     async def cancel_order(self):
         """
           https://docs.idex.io/#cancel-order
-          
+
           {
               "parameters": {
                   "nonce": "91f460c0-9ee6-11ea-9026-c1542192a384",
@@ -172,7 +200,7 @@ class AuthenticatedClient():
               },
               "signature": "<Ethereum wallet signature>"
           }
-          
+
           [
               {
                   "orderId": "3a9ef9c0-a779-11ea-907d-23e999279287"
@@ -209,7 +237,7 @@ class AuthenticatedClient():
     async def get_fills(self):
         """
           https://docs.idex.io/#get-fills
-          
+
           [
             {
                 "fillId": "974480d0-a776-11ea-895b-bfcbb5bdaa50",
@@ -236,7 +264,7 @@ class AuthenticatedClient():
     async def get_deposit(self):
         """
           https://docs.idex.io/#get-deposits
-          
+
           [
               {
                   "depositId": "57f88930-a6c7-11ea-9d9c-6b2dc98dcc67",
@@ -260,7 +288,7 @@ class AuthenticatedClient():
     async def withdraw(self):
         """
           https://docs.idex.io/#withdraw-funds
-          
+
           {
               "parameters": {
                   "nonce": "93dd1df0-9ee6-11ea-a40b-3148146b6ce3",
@@ -270,7 +298,7 @@ class AuthenticatedClient():
               },
               "signature": "<Ethereum wallet signature>"
           }
-          
+
           [
               {
                   "withdrawalId": "3ac67790-a77c-11ea-ae39-b3356c7170f3",
@@ -302,7 +330,7 @@ class AuthenticatedClient():
     async def get_ws_token(self):
         """
           https://docs.idex.io/#get-authentication-token
-          
+
           {
               "token": "<WebSocket authentication token>"
           }

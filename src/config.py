@@ -16,11 +16,12 @@ class APIConfig():
                  wallet_address=None,
                  wallet_private_key=None,
                  solidityKeccak=None,
-                 ethSignMessage=None) -> None:
+                 ethSignMessage=None,
+                 sandbox=True) -> None:
         self._api_key = api_key
         self._wallet_address = wallet_address
         self.solidityKeccak = solidityKeccak
-
+        self.sandbox = sandbox
         self._headers = {
             'Accept': 'application/json',
             'User-Agent': '@idexio/idex-sdk-python'
@@ -48,6 +49,18 @@ class APIConfig():
 
     def get_nonce():
         return uuid.uuid1()
+      
+    def get_rest_url():
+      if self.sandbox == False:
+        return 'https://api.idex.io/v1'
+      else:
+        return 'https://api-sandbox.idex.io/v1'
+    
+    def get_ws_url():
+      if self.sandbox == False:
+        return 'wss://websocket.idex.io/v1'
+      else:
+        return 'wss://websocket-sandbox.idex.io/v1'
 
     def get_headers(self, querystring=None):
         headers = self._headers.copy()
