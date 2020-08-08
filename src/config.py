@@ -2,6 +2,8 @@ import hmac
 import hashlib
 import uuid
 
+from typing import Optional
+
 # TODO Consider inheritance based on python convention?
 
 
@@ -11,10 +13,10 @@ class APIConfig():
     """
 
     def __init__(self, *,
-                 api_key=None,
-                 api_secret=None,
-                 wallet_address=None,
-                 wallet_private_key=None,
+                 api_key: Optional[str] = None,
+                 api_secret: Optional[str] = None,
+                 wallet_address: Optional[str] = None,
+                 wallet_private_key: Optional[str] = None,
                  solidityKeccak=None,
                  ethSignMessage=None,
                  sandbox=True) -> None:
@@ -47,22 +49,22 @@ class APIConfig():
 
             self.sign_message = sign_message
 
-    def get_nonce():
+    def get_nonce(self):
         return uuid.uuid1()
-      
-    def get_rest_url():
-      if self.sandbox == False:
-        return 'https://api.idex.io/v1'
-      else:
-        return 'https://api-sandbox.idex.io/v1'
-    
-    def get_ws_url():
-      if self.sandbox == False:
-        return 'wss://websocket.idex.io/v1'
-      else:
-        return 'wss://websocket-sandbox.idex.io/v1'
 
-    def get_headers(self, querystring=None):
+    def get_rest_url(self):
+        if self.sandbox == False:
+            return 'https://api.idex.io/v1'
+        else:
+            return 'https://api-sandbox.idex.io/v1'
+
+    def get_ws_url(self):
+        if self.sandbox == False:
+            return 'wss://websocket.idex.io/v1'
+        else:
+            return 'wss://websocket-sandbox.idex.io/v1'
+
+    def get_headers(self, querystring: Optional[str] = None):
         headers = self._headers.copy()
         # TODO - Handle when dont have private key (get_hmac_signature wont be defined)
         if querystring != None:
