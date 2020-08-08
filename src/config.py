@@ -51,9 +51,11 @@ class APIConfig():
 
     def get_headers(self, querystring=None):
         headers = self._headers.copy()
+        # TODO - Handle when dont have private key (get_hmac_signature wont be defined)
         if querystring != None:
             headers['IDEX-HMAC-Signature'] = self.get_hmac_signature(
-                querystring)
+                querystring
+            )
 
         return headers
 
