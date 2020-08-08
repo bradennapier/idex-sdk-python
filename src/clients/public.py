@@ -1,7 +1,7 @@
 import aiohttp
 import asyncio
 
-from typing import Optional
+from typing import Optional, Literal
 
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
@@ -32,7 +32,19 @@ class PublicClient():
         """
         pass
 
-    async def get_exchange(self):
+    async def get_exchange(self) -> Literal[{
+      'timeZone': 'UTC',
+      'serverTime': int,
+      'ethereumDepositContractAddress': str,
+      'ethUsdPrice': str,
+      'gasPrice': str,
+      'volume24hUsd': str,
+      'makerFeeRate': str,
+      'takerFeeRate': str,
+      'makerTradeMinimum': str,
+      'takerTradeMinimum': str,
+      'withdrawalMinimum': str
+    }]:
         """
           https://docs.idex.io/#get-exchange
           {
