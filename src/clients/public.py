@@ -1,6 +1,8 @@
 import aiohttp
 import asyncio
 
+from typing import Optional
+
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
 
@@ -10,7 +12,7 @@ class PublicClient():
         print('config', config)
         self.config = config
 
-    async def create(self, is_sandbox: bool):
+    async def create(self):
         self.request = IDEXAsyncRequest()
         await self.request.create()
 

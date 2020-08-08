@@ -1,4 +1,6 @@
 import asyncio
+from typing import Optional
+
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
 
@@ -8,7 +10,8 @@ from src.decorators import require_api_secret, require_wallet_signature
 
 
 class AuthenticatedClient():
-    def __init__(self, *, config: APIConfig):
+    def __init__(self, *, 
+                 config: Optional[APIConfig]) -> None:
         print('config', config)
         self.config = config
 
@@ -16,10 +19,25 @@ class AuthenticatedClient():
         self.request = IDEXAsyncRequest()
         await self.request.create()
 
+    def _get_config(self, config: Optional[APIConfig] = None):
+      _config = config
+      
+      if not _config:
+          _config = self.config
+          
+      # Throw Exception if still no config?
+      
+      return _config
+    
     @require_api_secret
-    async def get_user(self, *, nonce, config=None):
+    async def get_user(self, *, 
+                       config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-user-account
+          
+          May either pass a config explicitly or it will use the config 
+          provided when constructed.
+          
           {
               "depositEnabled": true,
               "orderEnabled": true,
@@ -34,13 +52,11 @@ class AuthenticatedClient():
           }
         """
         # Allow for config override
-        _config = config
-        if _config == None:
-            _config = self.config
+        
 
         result = await self.request.get(
             endpoint='user',
-            config=_config,
+            config=self._get_config(config),
             params={
                 'nonce': self.config.get_nonce()
             }
@@ -49,8 +65,12 @@ class AuthenticatedClient():
 
     @require_api_secret
     @require_wallet_signature
-    async def associate_wallet(self, *, nonce, wallet):
+    async def associate_wallet(self, *,
+                               config: Optional[APIConfig] = None):
         """
+          Associate the wallet handled by the config.  May either pass a config
+          explicitly or it will use the config provided when constructed.
+          
           https://docs.idex.io/#associate-wallet
           {
               "address": "0xA71C4aeeAabBBB8D2910F41C2ca3964b81F7310d",
@@ -61,7 +81,8 @@ class AuthenticatedClient():
         pass
 
     @require_api_secret
-    async def get_wallets(self, *, nonce):
+    async def get_wallets(self, *, 
+                          config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-wallets
           [
@@ -75,7 +96,7 @@ class AuthenticatedClient():
         """
         result = await self.request.get(
             endpoint='wallets',
-            config=self.config,
+            config=self._get_config(config),
             params={
                 'nonce': self.config.get_nonce()
             }
@@ -83,9 +104,15 @@ class AuthenticatedClient():
         return result
 
     @require_api_secret
-    async def get_balances(self, *, wallet, asset=None):
+    async def get_balances(self, *, 
+                           asset=None,
+                           config: Optional[APIConfig] = None):
         """
           https://docs.idex.io/#get-balances
+          
+          May either pass a config explicitly or it will use the config 
+          provided when constructed.
+          
           [
               {
                   "asset": "USDC",
@@ -97,9 +124,10 @@ class AuthenticatedClient():
               ...
           ]
         """
-
+        _config = self._get_config(config)
+        
         params = {
-            'nonce': self.config.get_nonce(),
+            'nonce': _config.get_nonce(),
             'wallet': wallet
         }
 
@@ -108,7 +136,7 @@ class AuthenticatedClient():
 
         result = await self.request.get(
             endpoint='user',
-            config=self.config,
+            config=_config,
             params=params
         )
 

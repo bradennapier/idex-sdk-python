@@ -22,7 +22,10 @@ class APIConfig():
                  wallet_address: Optional[str] = None,
                  wallet_private_key: Optional[str] = None,
                  solidityKeccak=None,
-                 ethSignMessage=None,
+                 # eth sign message
+                 sign_message=None,
+                 # override default nonce handling
+                 get_nonce=None,
                  sandbox=True) -> None:
         self._api_key = api_key
         self._wallet_address = wallet_address
@@ -33,11 +36,14 @@ class APIConfig():
             'User-Agent': '@idexio/idex-sdk-python'
         }
 
-        if api_key != None:
+        if get_nonce:
+          self.get_nonce = get_nonce
+          
+        if api_key:
             self.has_api_key = True
             self._headers['IDEX-API-Key'] = api_key
 
-        if api_secret != None:
+        if api_secret:
             self.has_api_secret = True
 
             def get_hmac_signature(self, querystring):
@@ -47,11 +53,11 @@ class APIConfig():
 
                 self.get_hmac_signature = get_hmac_signature
 
-        if wallet_private_key != None:
+        if wallet_private_key:
             self.has_private_key = True
 
             def sign_message(self, message):
-                return ethSignMessage(
+                return sign_message(
                     message,
                     private_key=wallet_private_key
                 )
