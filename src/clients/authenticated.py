@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional
+from typing import Optional, Literal
 
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
@@ -8,6 +8,18 @@ from src.decorators import require_api_secret, require_wallet_signature
 
 # TODO Can probably just require api_secret on init instead and forego all the decorator checks :-)
 
+RestResponseUser = Literal[{
+    "depositEnabled": bool,
+    "orderEnabled": bool,
+    "cancelEnabled": bool,
+    "withdrawEnabled": bool,
+    "kycTier": int,
+    "totalPortfolioValueUsd": str,
+    "withdrawalLimit": str,
+    "withdrawalRemaining": str,
+    "makerFeeRate": str,
+    "takerFeeRate": str
+}]
 
 class AuthenticatedClient():
     def __init__(self, *,
@@ -31,26 +43,21 @@ class AuthenticatedClient():
 
     @require_api_secret
     async def get_user(self, *,
-                       config: Optional[APIConfig] = None):
-        """
-          https://docs.idex.io/#get-user-account
+                       config: Optional[APIConfig] = None) -> RestResponseUser:
+        """Get the user authenticated by the provided APIConfig.
+        
+        https://docs.idex.io/#get-user-account
+        
+        Args:
+            config (Optional[APIConfig], optional): 
+                May either pass a config explicitly or it will use the config 
+                provided when constructed.. Defaults to None.
 
-          May either pass a config explicitly or it will use the config 
-          provided when constructed.
-
-          {
-              "depositEnabled": true,
-              "orderEnabled": true,
-              "cancelEnabled": true,
-              "withdrawEnabled": true,
-              "kycTier": 2,
-              "totalPortfolioValueUsd": "127182.82",
-              "withdrawalLimit": "unlimited",
-              "withdrawalRemaining": "unlimited",
-              "makerFeeRate": "0.001",
-              "takerFeeRate": "0.002"
-          }
+        Returns:
+            RestResponseUser: The authenticated user
         """
+
+        
         # Allow for config override
 
         result = await self.request.get(
@@ -127,7 +134,7 @@ class AuthenticatedClient():
 
         params = {
             'nonce': _config.get_nonce(),
-            'wallet': wallet
+            'wallet': _config.wallet_address
         }
 
         if asset != None:

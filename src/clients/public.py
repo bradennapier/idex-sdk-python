@@ -45,6 +45,8 @@ RestResponseServerTime = Literal[{
     'serverTime': int
 }]
 
+RestResponsePing = Literal[{}]
+
 
 class PublicClient():
     def __init__(self, config: APIConfig):
@@ -55,12 +57,18 @@ class PublicClient():
         self.request = IDEXAsyncRequest()
         await self.request.create()
 
-    async def get_ping(self) -> Literal[{}]:
-        """
-          https://docs.idex.io/#get-ping.
-          {}
-        """
-        pass
+    async def get_ping(self) -> RestResponsePing:
+      """
+      get_ping [summary]
+          Check for server liveness
+          
+      [extended_summary]
+          https://docs.idex.io/#get-ping
+          
+      Returns:
+          RestResponsePing: [description]
+      """        
+      pass
 
     async def get_server_time(self) -> Literal[RestResponseServerTime]:
         """

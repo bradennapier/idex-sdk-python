@@ -28,7 +28,7 @@ class APIConfig():
                  get_nonce=None,
                  sandbox=True) -> None:
         self._api_key = api_key
-        self._wallet_address = wallet_address
+        self.wallet_address = wallet_address
         self.solidityKeccak = solidityKeccak
         self.sandbox = sandbox
         self._headers = {
@@ -47,22 +47,22 @@ class APIConfig():
             self.has_api_secret = True
 
             def get_hmac_signature(self, querystring):
-                return hmac.new(secret,
+                return hmac.new(api_secret,
                                 querystring,
                                 digestmod=hashlib.sha256).hexdigest()
 
-                self.get_hmac_signature = get_hmac_signature
+            self.get_hmac_signature = get_hmac_signature
 
         if wallet_private_key:
             self.has_private_key = True
 
-            def sign_message(self, message):
+            def config_sign_message(self, message):
                 return sign_message(
                     message,
                     private_key=wallet_private_key
                 )
 
-            self.sign_message = sign_message
+            self.sign_message = config_sign_message
 
     def get_nonce(self):
         return uuid.uuid1()
@@ -82,9 +82,9 @@ class APIConfig():
     def get_headers(self, querystring: Optional[str] = None):
         headers = self._headers.copy()
         # TODO - Handle when dont have private key (get_hmac_signature wont be defined)
-        if querystring != None:
+        if querystring and self.get_hmac_signature:
             headers['IDEX-HMAC-Signature'] = self.get_hmac_signature(
-                querystring
+                querystring=querystring
             )
 
         return headers
