@@ -5,7 +5,7 @@ from typing import Optional, Literal, List, Union
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
 
-Asset = Literal[{
+RestResponseAsset = Literal[{
     "name": str,
     "symbol": str,
     "contractAddress": str,
@@ -13,7 +13,7 @@ Asset = Literal[{
     "exchangeDecimals": 8
 }]
 
-Market = Literal[{
+RestResponseMarket = Literal[{
     "market": str,
     "status": Union[
         Literal["active"],
@@ -27,7 +27,7 @@ Market = Literal[{
     "quoteAssetPrecision": 8
 }]
 
-Exchange = Literal[{
+RestResponseExchange = Literal[{
     'timeZone': 'UTC',
     'serverTime': int,
     'ethereumDepositContractAddress': str,
@@ -39,6 +39,10 @@ Exchange = Literal[{
     'makerTradeMinimum': str,
     'takerTradeMinimum': str,
     'withdrawalMinimum': str
+}]
+
+RestResponseServerTime = Literal[{
+    'serverTime': int
 }]
 
 
@@ -58,9 +62,7 @@ class PublicClient():
         """
         pass
 
-    async def get_server_time(self) -> Literal[{
-        'serverTime': int
-    }]:
+    async def get_server_time(self) -> Literal[RestResponseServerTime]:
         """
           https://docs.idex.io/#get-time
           {
@@ -69,7 +71,7 @@ class PublicClient():
         """
         pass
 
-    async def get_exchange(self) -> Exchange:
+    async def get_exchange(self) -> RestResponseExchange:
         """
           https://docs.idex.io/#get-exchange
           {
@@ -88,7 +90,7 @@ class PublicClient():
         """
         pass
 
-    async def get_assets(self) -> List[Asset]:
+    async def get_assets(self) -> List[RestResponseAsset]:
         """
           https://docs.idex.io/#get-assets
           [
@@ -111,7 +113,7 @@ class PublicClient():
         """
         pass
 
-    async def get_markets(self) -> List[Market]:
+    async def get_markets(self) -> List[RestResponseMarket]:
         """
           https://docs.idex.io/#get-markets
           [
