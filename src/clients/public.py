@@ -28,8 +28,11 @@ class RestResponseMarket(TypedDict):
 
 class RestResponseExchange(TypedDict):
     """
-    [summary]
+    Returns basic information about the exchange.
 
+    ### References
+    - https://docs.idex.io/#get-exchange
+    
     ### Attributes
         `timeZone: str`:
             summary: 'Timezone pass of the exchange'
@@ -68,7 +71,8 @@ class RestResponseServerTime(TypedDict):
     """
     Response to the `time` request.
     
-    - Documentation: https://docs.idex.io/#get-time
+    ### References
+    - https://docs.idex.io/#get-time
     
     ### Attributes
         `serverTime: int`:
@@ -80,7 +84,8 @@ class RestResponsePing(TypedDict):
     """
     Response to the `ping` request.
     
-    - Documentation: https://docs.idex.io/#get-ping
+    ### References
+    - https://docs.idex.io/#get-ping
     """    
     pass
 
