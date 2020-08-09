@@ -37,8 +37,8 @@ class APIConfig():
         }
 
         if get_nonce:
-          self.get_nonce = get_nonce
-          
+            self.get_nonce = get_nonce
+
         if api_key:
             self.has_api_key = True
             self._headers['IDEX-API-Key'] = api_key
