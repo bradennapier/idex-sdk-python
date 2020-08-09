@@ -25,8 +25,29 @@ class APIConfig():
                  # eth sign message
                  sign_message=None,
                  # override default nonce handling
-                 get_nonce=None,
-                 sandbox=True) -> None:
+                 get_nonce=None,         
+                 sandbox: Optional[bool] = True) -> None:
+        """
+        
+        ### References:
+        - https://docs.idex.io/#authentication
+        
+        ### Arguments:
+            `api_key: str | None = None`:
+                summary: 'Description here'
+            `api_secret: str | None = None`
+                summary: 'Description here'
+            `wallet_address: str | None = None`: 
+                summary: ''
+            `wallet_private_key (Optional[str], optional)`: [description]. Defaults to None.
+            `solidityKeccak ([type], optional)`: [description]. Defaults to None.
+            `sign_message ([type], optional)`: [description]. Defaults to None.
+            `get_nonce ([type], optional)`: [description]. Defaults to None.
+            `sandbox (bool, optional)`: [description]. Defaults to True.
+
+        ### Returns:
+            [type]: [description]
+        """        
         self._api_key = api_key
         self.wallet_address = wallet_address
         self.solidityKeccak = solidityKeccak
@@ -46,7 +67,7 @@ class APIConfig():
         if api_secret:
             self.has_api_secret = True
 
-            def get_hmac_signature(self, querystring):
+            def get_hmac_signature(self: APIConfig, querystring: str) -> str:
                 return hmac.new(api_secret,
                                 querystring,
                                 digestmod=hashlib.sha256).hexdigest()
@@ -56,7 +77,7 @@ class APIConfig():
         if wallet_private_key:
             self.has_private_key = True
 
-            def config_sign_message(self, message):
+            def config_sign_message(self: APIConfig, message: str) -> str:
                 return sign_message(
                     message,
                     private_key=wallet_private_key

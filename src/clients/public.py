@@ -1,52 +1,88 @@
-from typing import Optional, Literal, List, Union
+from typing import  Literal, List, Union, TypedDict
 
 # Todo figure out how to fix pylint for importing
 
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
 
-RestResponseAsset = Literal[{
-    "name": str,
-    "symbol": str,
-    "contractAddress": str,
-    "assetDecimals": int,
-    "exchangeDecimals": 8
-}]
+class RestResponseAsset(TypedDict):
+    name: str
+    symbol: str
+    contractAddress: str
+    assetDecimals: int
+    exchangeDecimals: Literal[8]
 
-RestResponseMarket = Literal[{
-    "market": str,
-    "status": Union[
+class RestResponseMarket(TypedDict):
+    market: str
+    status: Union[
         Literal["active"],
         Literal["inactive"],
         Literal["cancelsOnly"],
         Literal["limitMakerOnly"]
-    ],
-    "baseAsset": str,
-    "baseAssetPrecision": 8,
-    "quoteAsset": str,
-    "quoteAssetPrecision": 8
-}]
+    ]
+    baseAsset: str
+    baseAssetPrecision: Literal[8]
+    quoteAsset: str
+    quoteAssetPrecision: Literal[8]
 
-RestResponseExchange = Literal[{
-    'timeZone': 'UTC',
-    'serverTime': int,
-    'ethereumDepositContractAddress': str,
-    'ethUsdPrice': str,
-    'gasPrice': str,
-    'volume24hUsd': str,
-    'makerFeeRate': str,
-    'takerFeeRate': str,
-    'makerTradeMinimum': str,
-    'takerTradeMinimum': str,
-    'withdrawalMinimum': str
-}]
 
-RestResponseServerTime = Literal[{
-    'serverTime': int
-}]
+class RestResponseExchange(TypedDict):
+    """
+    [summary]
 
-RestResponsePing = Literal[{}]
+    ### Attributes
+        `timeZone: str`:
+            summary: 'Timezone pass of the exchange'
+            example: 'UTC'
+        `serverTime: int`:
+            summary: 'Current server timestamp in milliseconds'
+            example: 1596938576511
+        `ethereumDepositContractAddress: str`:
+            summary: 'Ethereum address of the exchange custody contract for deposits'
+            example: '0x...'
+        `ethUsdPrice: str`:
+            summary: 'Current price of ETH in USD'
+            example: '406.46'
+        `gasPrice: str`
+        `volume24hUsd: str`
+        `makerFeeRate: str`
+        `takerFeeRate: str`
+        `makerTradeMinimum: str`
+        `takerTradeMinimum: str`
+        `withdrawalMinimum: str`
+    """    
+    timeZone: Literal['UTC']
+    serverTime: int
+    ethereumDepositContractAddress: str
+    ethUsdPrice: str
+    gasPrice: str
+    volume24hUsd: str
+    makerFeeRate: str
+    takerFeeRate: str
+    makerTradeMinimum: str
+    takerTradeMinimum: str
+    withdrawalMinimum: str
 
+
+class RestResponseServerTime(TypedDict):
+    """
+    Response to the `time` request.
+    
+    - Documentation: https://docs.idex.io/#get-time
+    
+    ### Attributes
+        `serverTime: int`:
+            summary: 'The timestamp from the server in milliseconds'
+    """  
+    serverTime: int
+
+class RestResponsePing(TypedDict):
+    """
+    Response to the `ping` request.
+    
+    - Documentation: https://docs.idex.io/#get-ping
+    """    
+    pass
 
 class PublicClient():
     def __init__(self, config: APIConfig):
@@ -58,19 +94,19 @@ class PublicClient():
         await self.request.create()
 
     async def get_ping(self) -> RestResponsePing:
-      """
-      get_ping [summary]
-          Check for server liveness
-          
-      [extended_summary]
-          https://docs.idex.io/#get-ping
-          
-      Returns:
-          RestResponsePing: [description]
-      """        
-      pass
+        """
+        get_ping [summary]
+            Check for server liveness
 
-    async def get_server_time(self) -> Literal[RestResponseServerTime]:
+        [extended_summary]
+            https://docs.idex.io/#get-ping
+
+        Returns:
+            RestResponsePing: [description]
+        """
+        return {}
+
+    async def get_server_time(self) -> RestResponseServerTime:
         """
           https://docs.idex.io/#get-time
           {

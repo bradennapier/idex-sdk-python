@@ -1,5 +1,4 @@
-import asyncio
-from typing import Optional, Literal
+from typing import Optional, TypedDict
 
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
@@ -8,35 +7,36 @@ from src.decorators import require_api_secret, require_wallet_signature
 
 # TODO Can probably just require api_secret on init instead and forego all the decorator checks :-)
 
-RestResponseUser = Literal[{
-    "depositEnabled": bool,
-    "orderEnabled": bool,
-    "cancelEnabled": bool,
-    "withdrawEnabled": bool,
-    "kycTier": int,
-    "totalPortfolioValueUsd": str,
-    "withdrawalLimit": str,
-    "withdrawalRemaining": str,
-    "makerFeeRate": str,
-    "takerFeeRate": str
-}]
+class RestResponseUser(TypedDict):
+    depositEnabled: bool
+    orderEnabled: bool
+    cancelEnabled: bool
+    withdrawEnabled: bool
+    kycTier: int
+    totalPortfolioValueUsd: str
+    withdrawalLimit: str
+    withdrawalRemaining: str
+    makerFeeRate: str
+    takerFeeRate: str
 
 class AuthenticatedClient():
     def __init__(self, *,
-                 config: Optional[APIConfig]) -> None:
+                 config: Optional[APIConfig] = None) -> None:
         print('config', config)
         self.config = config
 
-    async def create(self):
+    async def create(self) -> None:
         self.request = IDEXAsyncRequest()
         await self.request.create()
 
-    def _get_config(self, config: Optional[APIConfig] = None):
+    def _get_config(self, config: Optional[APIConfig] = None) -> APIConfig:
         _config = config
 
         if not _config:
             _config = self.config
 
+        if not _config:
+            raise Exception('MISSING_REQUIRED_CONFIG')
         # Throw Exception if still no config?
 
         return _config
@@ -48,19 +48,22 @@ class AuthenticatedClient():
         
         https://docs.idex.io/#get-user-account
         
-        Args:
-            config (Optional[APIConfig], optional): 
-                May either pass a config explicitly or it will use the config 
-                provided when constructed.. Defaults to None.
+        ### Args:
+            `config: APIConfig | None = None`:
+                summary: '''
+                    May either pass a config explicitly or it will use the config
+                    provided when constructed.
+                '''
+                         
 
-        Returns:
-            RestResponseUser: The authenticated user
+        ### Returns:
+            `RestResponseUser`: 'The authenticated user'
         """
 
         
         # Allow for config override
 
-        result = await self.request.get(
+        result: RestResponseUser = await self.request.get(
             endpoint='user',
             config=self._get_config(config),
             params={
