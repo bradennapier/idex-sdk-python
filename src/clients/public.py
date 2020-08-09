@@ -6,26 +6,41 @@ from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
 
 Asset = Literal[{
-  "name": str,
-  "symbol": str,
-  "contractAddress": str,
-  "assetDecimals": int,
-  "exchangeDecimals": 8
+    "name": str,
+    "symbol": str,
+    "contractAddress": str,
+    "assetDecimals": int,
+    "exchangeDecimals": 8
 }]
 
 Market = Literal[{
-  "market": str,
-  "status": Union[
-    Literal["active"], 
-    Literal["inactive"], 
-    Literal["cancelsOnly"], 
-    Literal["limitMakerOnly"]
-  ],
-  "baseAsset": str,
-  "baseAssetPrecision": 8,
-  "quoteAsset": str,
-  "quoteAssetPrecision": 8
+    "market": str,
+    "status": Union[
+        Literal["active"],
+        Literal["inactive"],
+        Literal["cancelsOnly"],
+        Literal["limitMakerOnly"]
+    ],
+    "baseAsset": str,
+    "baseAssetPrecision": 8,
+    "quoteAsset": str,
+    "quoteAssetPrecision": 8
 }]
+
+Exchange = Literal[{
+    'timeZone': 'UTC',
+    'serverTime': int,
+    'ethereumDepositContractAddress': str,
+    'ethUsdPrice': str,
+    'gasPrice': str,
+    'volume24hUsd': str,
+    'makerFeeRate': str,
+    'takerFeeRate': str,
+    'makerTradeMinimum': str,
+    'takerTradeMinimum': str,
+    'withdrawalMinimum': str
+}]
+
 
 class PublicClient():
     def __init__(self, config: APIConfig):
@@ -44,7 +59,7 @@ class PublicClient():
         pass
 
     async def get_server_time(self) -> Literal[{
-      'serverTime': int
+        'serverTime': int
     }]:
         """
           https://docs.idex.io/#get-time
@@ -54,19 +69,7 @@ class PublicClient():
         """
         pass
 
-    async def get_exchange(self) -> Literal[{
-      'timeZone': 'UTC',
-      'serverTime': int,
-      'ethereumDepositContractAddress': str,
-      'ethUsdPrice': str,
-      'gasPrice': str,
-      'volume24hUsd': str,
-      'makerFeeRate': str,
-      'takerFeeRate': str,
-      'makerTradeMinimum': str,
-      'takerTradeMinimum': str,
-      'withdrawalMinimum': str
-    }]:
+    async def get_exchange(self) -> Exchange:
         """
           https://docs.idex.io/#get-exchange
           {
