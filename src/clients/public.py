@@ -1,8 +1,31 @@
-from typing import Optional, Literal
+from typing import Optional, Literal, List, Union
+
+# Todo figure out how to fix pylint for importing
 
 from src.config import APIConfig
 from src.async_request import IDEXAsyncRequest
 
+Asset = Literal[{
+  "name": str,
+  "symbol": str,
+  "contractAddress": str,
+  "assetDecimals": int,
+  "exchangeDecimals": 8
+}]
+
+Market = Literal[{
+  "market": str,
+  "status": Union[
+    Literal["active"], 
+    Literal["inactive"], 
+    Literal["cancelsOnly"], 
+    Literal["limitMakerOnly"]
+  ],
+  "baseAsset": str,
+  "baseAssetPrecision": 8,
+  "quoteAsset": str,
+  "quoteAssetPrecision": 8
+}]
 
 class PublicClient():
     def __init__(self, config: APIConfig):
@@ -13,14 +36,16 @@ class PublicClient():
         self.request = IDEXAsyncRequest()
         await self.request.create()
 
-    async def get_ping(self):
+    async def get_ping(self) -> Literal[{}]:
         """
           https://docs.idex.io/#get-ping.
           {}
         """
         pass
 
-    async def get_server_time(self):
+    async def get_server_time(self) -> Literal[{
+      'serverTime': int
+    }]:
         """
           https://docs.idex.io/#get-time
           {
@@ -60,7 +85,7 @@ class PublicClient():
         """
         pass
 
-    async def get_assets(self):
+    async def get_assets(self) -> List[Asset]:
         """
           https://docs.idex.io/#get-assets
           [
@@ -83,7 +108,7 @@ class PublicClient():
         """
         pass
 
-    async def get_markets(self):
+    async def get_markets(self) -> List[Market]:
         """
           https://docs.idex.io/#get-markets
           [
